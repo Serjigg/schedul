@@ -1,4 +1,3 @@
-
 from job import Job
 import time
 import uuid
@@ -6,11 +5,11 @@ import datetime
 from queue import Queue
 import threading
 
+
 every_minute = 'every minute'
 every_hour = 'every hour' #-> minutes
 every_day = 'every day' #-> minutes hour
 from typing import Literal
-
 
 def print_hello(text):
     time.sleep(10)
@@ -21,6 +20,7 @@ def print_hello2():
 
 def print_hello3(text):
     print('Hello world3', time.time_ns(), '    ', datetime.datetime.now(),  text)
+
 
 class MyScheduler:
     TaskType = Literal['every_minute', 'every_hour', 'every_day', 'once']
@@ -86,41 +86,12 @@ class MyScheduler:
             # time.sleep(0.5)
             # print(x)
             # print('#'*230,datetime.datetime.now())
+
+
+
         if self.time.day != current_time.day:
             task_every_day = list(filter(lambda task: task.type_run == 'every_day', self.list_tasks_for_run))
 
-        # for job in self.list_tasks_for_run:
-        #     if job.type_run == 'every_minute':
-        #         if job.last_execution is None or (datetime.datetime.now() - job.last_execution).total_seconds() >= 60:
-        #             job.link_thread = threading.Thread(target=self.run_job, args=(job,))
-        #             job.status = 'active'
-        #             job.link_thread.start()
-        #             job.last_execution = datetime.datetime.now()
-        #         if job.link_thread is not None and not job.link_thread.is_alive():
-        #             job.status = 'no_active'
-        #
-        #         # x = job.info_task()
-        #         # time.sleep(0.5)
-        #         # print(x)
-        #         # print('#'*230,datetime.datetime.now())
-        #     elif job.type_run == 'every_hour':
-        #
-        #         if job.last_execution is None or (datetime.datetime.now() - job.last_execution).total_seconds() >= 3600 and job.minutes == int(current_time[3:]):
-        #             job.link_thread = threading.Thread(target=self.run_job, args=(job,))
-        #             job.status = 'active'
-        #             job.link_thread.start()
-        #             job.last_execution = datetime.datetime.now()
-        #         if job.link_thread is not None and not job.link_thread.is_alive():
-        #             job.status = 'no_active'
-        #     elif job.type_run == 'every_day':
-        #         if job.hour == int(current_time[:2]) and job.minutes == int(current_time[3:]):
-        #             if self.last_execution_time.get(job.id, None) is None or self.last_execution_time[job.id] < datetime.datetime.now().date():
-        #                 job.link_thread = threading.Thread(target=self.run_job, args=(job,))
-        #                 job.status = 'active'
-        #                 job.link_thread.start()
-        #             self.last_execution_time[job.id] = datetime.datetime.now().date()
-        #         if job.link_thread is not None and not job.link_thread.is_alive():
-        #             job.status = 'no_active'
 
     def add_job(self, function: object, type_run, hour=0, minute=0, args='', ):
         with self.lock:
@@ -135,10 +106,10 @@ class MyScheduler:
 def main():
 
     schedule = MyScheduler()
-    #schedule.add_job(function=print_hello3,          minutes=45, type_run="every_hour", args='каждый час')
+    schedule.add_job(function=print_hello3,          minute=1, type_run="every_hour", args='каждый час')
     #schedule.add_job(function=print_hello3,          type_run="every_minute", args='каждую минуту')
-    schedule.add_job(function=print_hello3,          minute=13, type_run="every_hour", args='каждую минуту')
-   # schedule.add_job(function=print_hello3, hour=10, minutes=45, type_run="every_day", args='каждый день')
+    schedule.add_job(function=print_hello3,          minute=11, type_run="every_hour", args='каждую час')
+   # schedule.add_job(function=print_hello3, hour=10, minute=45, type_run="every_day", args='каждый день')
 
     schedule_thread = threading.Thread(target=schedule.cycle_scheduler)
     schedule_thread.start()
