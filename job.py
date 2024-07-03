@@ -4,25 +4,25 @@ import multiprocessing
 
 
 class Job:
-    def __init__(self, function, hour, minute, type_run,run_cycle = False,time_out=2, args=''):
+    def __init__(self, function, type_run, hour=None, minute=None, day=None, run_cycle=False, time_out=2, args='',
+                 id_task=None):
         self.function = function
+        self.args = args
+        self.day = day
         self.hour = hour
         self.minute = minute
-        self.args = args
-        self.id = str(uuid.uuid4())
-        self.link_process = multiprocessing.Process(target=function)
-        self.stop_event = threading.Event()
-        self.type_run = type_run
-        self.status = 'no_active'
-        self.time_start = None
         self.time_out = time_out
-        self.run_cycle = run_cycle
+        self.type_run = type_run
+        self.link_process = multiprocessing.Process(target=self.function, args=(self.args,))
+        self.time_start = None
+        self.status_run = 'not executed'
+        self.id_task = id_task
 
     def info_task(self):
         return {'function': self.function,
                 'hour': self.hour,
                 'minutes': self.minute,
-                'id': self.id,
-                'link_thread': self.link_thread,
-                'last_execution': self.time_start,
-                'status': self.status}
+                'day': self.day,
+                'time_start': self.time_start,
+                'id': self.id_task,
+                'status_run': self.status_run}
